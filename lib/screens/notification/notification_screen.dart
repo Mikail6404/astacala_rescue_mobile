@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:astacala_rescue_mobile/widgets/notification_badge.dart';
+import 'package:astacala_rescue_mobile/widgets/feedback_animations.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
@@ -51,6 +52,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   NotificationService.markAllAsRead();
                   _loadNotifications();
                 });
+                FeedbackAnimations.showSuccess(
+                  context,
+                  message: 'Semua notifikasi telah ditandai sebagai dibaca',
+                );
               },
               child: const Text(
                 'Tandai Semua',

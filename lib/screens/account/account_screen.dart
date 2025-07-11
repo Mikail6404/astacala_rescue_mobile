@@ -2,6 +2,7 @@
 
 import 'package:astacala_rescue_mobile/cubits/auth/auth_cubit.dart';
 import 'package:astacala_rescue_mobile/screens/account/edit_profile_screen.dart';
+import 'package:astacala_rescue_mobile/widgets/feedback_animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -342,6 +343,11 @@ class AccountScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
+                // Show feedback animation for logout
+                FeedbackAnimations.showSuccess(
+                  context,
+                  message: 'Logout berhasil!',
+                );
                 context.read<AuthCubit>().logout();
               },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red),

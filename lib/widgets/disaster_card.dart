@@ -2,32 +2,47 @@
 
 import 'package:astacala_rescue_mobile/models/disaster_report_card_model.dart';
 import 'package:astacala_rescue_mobile/screens/detail/detail_screen.dart';
+import 'package:astacala_rescue_mobile/widgets/micro_interactions.dart';
 import 'package:flutter/material.dart';
 
-class DisasterCard extends StatelessWidget {
+class D              ),
+            ),
+          ),
+        ),
+      ),
+    );rCard extends StatelessWidget {
   final DisasterReportCardModel report;
 
   const DisasterCard({super.key, required this.report});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.08),
-            spreadRadius: 1,
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+    return Hero(
+      tag: 'disaster_card_${report.title}_${report.commentCount}',
+      child: AnimatedInteractiveCard(
+        onTap: () {
+          MicroInteractions.navigateWithAnimation(
+            context,
+            DetailScreen(report: report),
+          );
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.08),
+                spreadRadius: 1,
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Image with Enhanced Overlay
             Stack(
@@ -136,7 +151,7 @@ class DisasterCard extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
-                          _getWeatherIcon(report.weatherCondition),
+                          getWeatherIcon(report.weatherCondition),
                           color: Colors.white,
                           size: 16,
                         ),
@@ -341,7 +356,7 @@ class DisasterCard extends StatelessWidget {
     );
   }
 
-  IconData _getWeatherIcon(String condition) {
+  IconData getWeatherIcon(String condition) {
     switch (condition.toLowerCase()) {
       case 'cerah':
         return Icons.wb_sunny;

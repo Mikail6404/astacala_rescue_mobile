@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:astacala_rescue_mobile/cubits/report/report_cubit.dart';
 import 'package:astacala_rescue_mobile/cubits/report/report_state.dart';
 import 'package:astacala_rescue_mobile/models/report_data.dart';
+import 'package:astacala_rescue_mobile/widgets/feedback_animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
@@ -130,12 +131,23 @@ class _ReportFormState extends State<ReportForm> {
           desiredAccuracy: LocationAccuracy.high);
 
       // 4. Update the text field
-      _coordinatesController.text = '${position.latitude}, ${position.longitude}';
+      _coordinatesController.text =
+          '${position.latitude}, ${position.longitude}';
+
+      // Show success feedback
+      if (mounted) {
+        FeedbackAnimations.showSuccess(
+          context,
+          message: 'Lokasi berhasil didapatkan!',
+        );
+      }
     } catch (e) {
       // Show error message to the user
       if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
+        FeedbackAnimations.showError(
+          context,
+          message: 'Error: ${e.toString()}',
+        );
       }
     } finally {
       setState(() {
@@ -156,11 +168,20 @@ class _ReportFormState extends State<ReportForm> {
         setState(() {
           _selectedImage = File(pickedFile.path);
         });
+
+        // Show success feedback
+        if (mounted) {
+          FeedbackAnimations.showSuccess(
+            context,
+            message: 'Gambar berhasil dipilih!',
+          );
+        }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to pick image: $e')),
+        FeedbackAnimations.showError(
+          context,
+          message: 'Gagal memilih gambar: $e',
         );
       }
     }
@@ -203,7 +224,10 @@ class _ReportFormState extends State<ReportForm> {
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: Text(
         title,
-        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF8B0000)),
+        style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF8B0000)),
       ),
     );
   }
@@ -213,19 +237,15 @@ class _ReportFormState extends State<ReportForm> {
     return BlocListener<ReportCubit, ReportState>(
       listener: (context, state) {
         if (state is ReportSubmissionSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Laporan berhasil dikirim!'),
-              backgroundColor: Colors.green,
-            ),
+          FeedbackAnimations.showSuccess(
+            context,
+            message: 'Laporan berhasil dikirim!',
           );
           _clearForm();
         } else if (state is ReportSubmissionFailure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Gagal mengirim laporan: ${state.error}'),
-              backgroundColor: Colors.red,
-            ),
+          FeedbackAnimations.showError(
+            context,
+            message: 'Gagal mengirim laporan: ${state.error}',
           );
         }
       },
@@ -277,7 +297,8 @@ class _ReportFormState extends State<ReportForm> {
                 TextFormField(
                   controller: _locationController,
                   decoration: const InputDecoration(
-                      labelText: 'Lokasi Bencana', border: OutlineInputBorder()),
+                      labelText: 'Lokasi Bencana',
+                      border: OutlineInputBorder()),
                 ),
                 const SizedBox(height: 12),
 

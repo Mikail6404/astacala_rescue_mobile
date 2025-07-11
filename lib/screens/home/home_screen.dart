@@ -1,10 +1,12 @@
 // package:astacala_rescue_mobile/screens/home/home_screen.dart
 
 import 'package:astacala_rescue_mobile/models/disaster_report_card_model.dart';
-import 'package:astacala_rescue_mobile/widgets/disaster_card.dart';
+import 'package:astacala_rescue_mobile/widgets/disaster_card_enhanced.dart';
 import 'package:astacala_rescue_mobile/widgets/search_filter_bottom_sheet.dart';
 import 'package:astacala_rescue_mobile/widgets/notification_badge.dart';
 import 'package:astacala_rescue_mobile/widgets/quick_actions_widget.dart';
+import 'package:astacala_rescue_mobile/widgets/feedback_animations.dart';
+import 'package:astacala_rescue_mobile/widgets/micro_interactions.dart';
 import 'package:astacala_rescue_mobile/screens/notification/notification_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -51,8 +53,20 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: () async {
-        // TODO: Implement refresh functionality
-        await Future.delayed(const Duration(seconds: 1));
+        // Show loading feedback
+        FeedbackAnimations.showInfo(
+          context,
+          message: 'Memperbarui data bencana...',
+        );
+
+        // Simulate API call
+        await Future.delayed(const Duration(seconds: 2));
+
+        // Show success feedback
+        FeedbackAnimations.showSuccess(
+          context,
+          message: 'Data berhasil diperbarui',
+        );
       },
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -248,17 +262,12 @@ class HomeScreen extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   // Disaster Cards List
-                  ListView.separated(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: mockReports.length,
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(height: 16),
-                    itemBuilder: (context, index) {
+                  StaggeredAnimationWidget(
+                    children: mockReports.asMap().entries.map((entry) {
                       return DisasterCard(
-                        report: mockReports[index],
+                        report: entry.value,
                       );
-                    },
+                    }).toList(),
                   ),
 
                   const SizedBox(height: 32),

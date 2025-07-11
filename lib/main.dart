@@ -1,8 +1,11 @@
 // package:astacala_rescue_mobile/main.dart
 
 import 'package:astacala_rescue_mobile/cubits/auth/auth_cubit.dart';
+import 'package:astacala_rescue_mobile/cubits/report/report_cubit.dart';
 // Import the new wrapper
 import 'package:astacala_rescue_mobile/screens/auth/auth_wrapper.dart';
+import 'package:astacala_rescue_mobile/screens/report/report_wizard_screen.dart';
+import 'package:astacala_rescue_mobile/screens/map/map_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -78,6 +81,13 @@ class MyApp extends StatelessWidget {
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
         home: const AuthWrapper(),
+        routes: {
+          '/report': (context) => BlocProvider(
+                create: (context) => ReportCubit(),
+                child: const ReportWizardScreen(),
+              ),
+          '/map': (context) => const MapScreen(),
+        },
       ),
     );
   }

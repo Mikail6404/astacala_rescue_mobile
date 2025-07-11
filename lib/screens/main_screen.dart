@@ -1,9 +1,11 @@
 // package:astacala_rescue_mobile/screens/main_screen.dart
 
 import 'package:astacala_rescue_mobile/cubits/auth/auth_cubit.dart';
+import 'package:astacala_rescue_mobile/cubits/report/report_cubit.dart';
 import 'package:astacala_rescue_mobile/screens/account/account_screen.dart';
 import 'package:astacala_rescue_mobile/screens/home/home_screen.dart';
-import 'package:astacala_rescue_mobile/screens/report/report_screen.dart';
+import 'package:astacala_rescue_mobile/screens/report/report_wizard_screen.dart';
+import 'package:astacala_rescue_mobile/widgets/micro_interactions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,7 +22,10 @@ class _MainScreenState extends State<MainScreen> {
   // Fix: Changed 'static const' to 'final'.
   // This allows the list to hold non-const widgets like our updated HomeScreen.
   final List<Widget> _pages = <Widget>[
-    const ReportScreen(), // ReportScreen can be const
+    BlocProvider(
+      create: (context) => ReportCubit(),
+      child: const ReportWizardScreen(),
+    ), // Enhanced wizard-based reporting
     HomeScreen(), // HomeScreen is not const
     const AccountScreen(), // AccountScreen can be const
   ];
@@ -142,18 +147,15 @@ class _MainScreenState extends State<MainScreen> {
         ),
       ),
       floatingActionButton: _selectedIndex == 1
-          ? FloatingActionButton.extended(
+          ? AnimatedFloatingActionButton(
               onPressed: () {
                 setState(() {
                   _selectedIndex = 0; // Navigate to report screen
                 });
               },
               backgroundColor: const Color(0xFF8B0000),
-              foregroundColor: Colors.white,
-              icon: const Icon(Icons.emergency),
-              label: const Text('Lapor Darurat'),
-              elevation: 6,
-              extendedPadding: const EdgeInsets.symmetric(horizontal: 20),
+              heroTag: 'emergency_fab',
+              child: const Icon(Icons.emergency, color: Colors.white),
             )
           : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

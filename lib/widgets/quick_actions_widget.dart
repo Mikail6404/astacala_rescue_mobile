@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:astacala_rescue_mobile/screens/map/map_screen.dart';
+import 'package:astacala_rescue_mobile/widgets/feedback_animations.dart';
 
 class QuickActionsWidget extends StatelessWidget {
   const QuickActionsWidget({super.key});
@@ -214,6 +215,10 @@ class QuickActionsWidget extends StatelessWidget {
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
+              FeedbackAnimations.showInfo(
+                context,
+                message: 'Fitur panggilan langsung akan segera tersedia',
+              );
               // TODO: Implement direct call functionality
             },
             style: ElevatedButton.styleFrom(
