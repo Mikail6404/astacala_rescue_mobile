@@ -37,6 +37,9 @@ dependencies:
   flutter_bloc: ^9.1.1
   geolocator: ^13.0.1 # Pinned to a stable version to resolve build issue
   image_picker: ^1.1.2
+  flutter_map: ^7.0.2 # Free OpenStreetMap integration
+  latlong2: ^0.9.1 # Latitude/longitude calculations
+  url_launcher: ^6.3.1 # For map attribution links
 
 dev_dependencies:
   flutter_test:
