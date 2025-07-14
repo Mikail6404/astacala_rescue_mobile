@@ -147,12 +147,11 @@ class WelcomeScreen extends StatelessWidget {
                 ),
 
                 // Action Buttons
-                Expanded(
-                  flex: 1,
+                Flexible(
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      const SizedBox(height: 20),
-
                       // Enhanced Login Button
                       Container(
                         width: double.infinity,
@@ -203,7 +202,7 @@ class WelcomeScreen extends StatelessWidget {
                         ),
                       ),
 
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 8),
 
                       // Enhanced Register Button
                       OutlinedButton(

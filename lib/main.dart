@@ -3,7 +3,11 @@
 import 'package:astacala_rescue_mobile/cubits/auth/auth_cubit.dart';
 // Import the new wrapper
 import 'package:astacala_rescue_mobile/screens/auth/auth_wrapper.dart';
+import 'package:astacala_rescue_mobile/utils/app_colors.dart';
+import 'package:astacala_rescue_mobile/utils/app_spacing.dart';
+import 'package:astacala_rescue_mobile/utils/app_typography.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
@@ -20,65 +24,88 @@ class MyApp extends StatelessWidget {
       create: (context) => AuthCubit(),
       child: MaterialApp(
         title: 'Astacala Rescue',
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xFF8B0000),
-            brightness: Brightness.light,
-          ),
-          scaffoldBackgroundColor: const Color(0xFFF8F9FA),
-          appBarTheme: const AppBarTheme(
-            backgroundColor: Colors.white,
-            elevation: 0,
-            surfaceTintColor: Colors.transparent,
-            foregroundColor: Color(0xFF2C3E50),
-            titleTextStyle: TextStyle(
-              color: Color(0xFF2C3E50),
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          cardTheme: CardTheme(
-            elevation: 3,
-            shadowColor: Colors.black.withOpacity(0.1),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-          ),
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF8B0000),
-              foregroundColor: Colors.white,
-              padding:
-                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.0),
-              ),
-              elevation: 2,
-            ),
-          ),
-          inputDecorationTheme: InputDecorationTheme(
-            filled: true,
-            fillColor: Colors.grey[50],
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.grey[300]!),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.grey[300]!),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Color(0xFF8B0000), width: 2),
-            ),
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          ),
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
+        debugShowCheckedModeBanner: false,
+        theme: _buildTheme(),
         home: const AuthWrapper(),
       ),
+    );
+  }
+
+  ThemeData _buildTheme() {
+    return ThemeData(
+      useMaterial3: true,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: AppColors.primary,
+        brightness: Brightness.light,
+        primary: AppColors.primary,
+        onPrimary: AppColors.onPrimary,
+        secondary: AppColors.secondary,
+        onSecondary: AppColors.onSecondary,
+        surface: AppColors.surface,
+        onSurface: AppColors.onSurface,
+        background: AppColors.background,
+        onBackground: AppColors.onBackground,
+        error: AppColors.error,
+        onError: AppColors.onError,
+      ),
+      scaffoldBackgroundColor: AppColors.background,
+
+      // Enhanced AppBar Theme
+      appBarTheme: AppBarTheme(
+        backgroundColor: AppColors.surface,
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        foregroundColor: AppColors.onSurface,
+        titleTextStyle: AppTypography.headlineMedium.copyWith(
+          color: AppColors.onSurface,
+        ),
+        iconTheme: IconThemeData(
+          color: AppColors.onSurface,
+          size: AppSpacing.iconSizeMedium,
+        ),
+        centerTitle: true,
+        toolbarHeight: AppSpacing.appBarHeight,
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.dark,
+        ),
+      ),
+
+      // Enhanced Card Theme
+      cardTheme: CardThemeData(
+        elevation: AppSpacing.elevation3,
+        shadowColor: AppColors.shadowMedium,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
+        ),
+        color: AppColors.surface,
+        surfaceTintColor: Colors.transparent,
+        margin: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.lg,
+          vertical: AppSpacing.sm,
+        ),
+      ),
+
+      // Enhanced Button Themes
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          foregroundColor: AppColors.onPrimary,
+          padding: const EdgeInsets.symmetric(
+            vertical: AppSpacing.lg,
+            horizontal: AppSpacing.xxl,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+          ),
+          elevation: AppSpacing.elevation2,
+          shadowColor: AppColors.primary.withOpacity(0.3),
+          textStyle: AppTypography.labelLarge,
+          minimumSize: const Size(double.infinity, AppSpacing.buttonHeight),
+        ),
+      ),
+
+      visualDensity: VisualDensity.adaptivePlatformDensity,
     );
   }
 }

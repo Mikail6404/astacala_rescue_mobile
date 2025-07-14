@@ -5,11 +5,26 @@ import 'package:astacala_rescue_mobile/widgets/disaster_card.dart';
 import 'package:astacala_rescue_mobile/widgets/search_filter_bottom_sheet.dart';
 import 'package:astacala_rescue_mobile/widgets/notification_badge.dart';
 import 'package:astacala_rescue_mobile/widgets/quick_actions_widget.dart';
+import 'package:astacala_rescue_mobile/widgets/enhanced_loading_states.dart';
 import 'package:astacala_rescue_mobile/screens/notification/notification_screen.dart';
+import 'package:astacala_rescue_mobile/utils/app_colors.dart';
+import 'package:astacala_rescue_mobile/utils/app_spacing.dart';
+import 'package:astacala_rescue_mobile/utils/app_typography.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+
+  bool _isLoading = false;
 
   // Create mock data to build the UI without a backend
   final List<DisasterReportCardModel> mockReports = [
@@ -48,237 +63,229 @@ class HomeScreen extends StatelessWidget {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 1200),
+      vsync: this,
+    );
+
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
+    ));
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.3),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: const Interval(0.3, 1.0, curve: Curves.easeOutCubic),
+    ));
+
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _onRefresh() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    // TODO: Implement refresh functionality with backend
+    await Future.delayed(const Duration(seconds: 2));
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: () async {
-        // TODO: Implement refresh functionality
-        await Future.delayed(const Duration(seconds: 1));
-      },
-      child: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Hero Section with Gradient Background
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    const Color(0xFF8B0000),
-                    const Color(0xFF8B0000).withOpacity(0.8),
-                  ],
-                ),
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(24),
-                  bottomRight: Radius.circular(24),
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
+      onRefresh: _onRefresh,
+      child: AnimatedBuilder(
+        animation: _animationController,
+        builder: (context, child) {
+          return FadeTransition(
+            opacity: _fadeAnimation,
+            child: SlideTransition(
+              position: _slideAnimation,
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Icon(
-                            Icons.shield_outlined,
-                            color: Colors.white,
-                            size: 28,
-                          ),
+                    // Enhanced Hero Section with Gradient Background
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            AppColors.primary,
+                            AppColors.primary.withOpacity(0.8),
+                          ],
                         ),
-                        const SizedBox(width: 12),
-                        const Expanded(
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(AppSpacing.radiusXxxl),
+                          bottomRight: Radius.circular(AppSpacing.radiusXxxl),
+                        ),
+                      ),
+                      child: SafeArea(
+                        child: Padding(
+                          padding: AppSpacing.screenPaddingAll,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'Hai, Sobat Relawan',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
+                              Row(
+                                children: [
+                                  Container(
+                                    padding:
+                                        const EdgeInsets.all(AppSpacing.md),
+                                    decoration: BoxDecoration(
+                                      color:
+                                          AppColors.onPrimary.withOpacity(0.2),
+                                      borderRadius: BorderRadius.circular(
+                                          AppSpacing.radiusLg),
+                                    ),
+                                    child: Icon(
+                                      Icons.shield_outlined,
+                                      color: AppColors.onPrimary,
+                                      size: AppSpacing.iconSizeLarge,
+                                    ),
+                                  ),
+                                  AppSpacing.horizontalSpaceMd,
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Hai, Sobat Relawan',
+                                          style: AppTypography.displaySmall
+                                              .copyWith(
+                                            color: AppColors.onPrimary,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Siap membantu kapan saja',
+                                          style:
+                                              AppTypography.bodyMedium.copyWith(
+                                            color: AppColors.onPrimary
+                                                .withOpacity(0.8),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  NotificationBadge(
+                                    count: NotificationService.getUnreadCount(),
+                                    icon: Icons.notifications_outlined,
+                                    iconColor: AppColors.onPrimary,
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const NotificationScreen(),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
                               ),
-                              Text(
-                                'Siap membantu kapan saja',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.white70,
-                                ),
+                              AppSpacing.verticalSpaceXxl,
+                              // Enhanced Emergency Stats Row
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: _buildEnhancedStatCard(
+                                      'Laporan Aktif',
+                                      '12',
+                                      Icons.report_problem,
+                                      AppColors.warning,
+                                    ),
+                                  ),
+                                  AppSpacing.horizontalSpaceMd,
+                                  Expanded(
+                                    child: _buildEnhancedStatCard(
+                                      'Tim Siaga',
+                                      '8',
+                                      Icons.group,
+                                      AppColors.success,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
                         ),
-                        NotificationBadge(
-                          count: NotificationService.getUnreadCount(),
-                          icon: Icons.notifications_outlined,
-                          iconColor: Colors.white,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    const NotificationScreen(),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
+                      ),
                     ),
-                    const SizedBox(height: 24),
-                    // Emergency Stats Row
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildStatCard(
-                              'Laporan Aktif', '12', Icons.report_problem),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: _buildStatCard('Tim Siaga', '8', Icons.group),
-                        ),
-                      ],
+
+                    // Main Content with Enhanced Spacing
+                    Padding(
+                      padding: AppSpacing.screenPaddingAll,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Enhanced Search Bar
+                          _buildEnhancedSearchBar(),
+
+                          AppSpacing.verticalSpaceXxl,
+
+                          // Quick Actions Section
+                          const QuickActionsWidget(),
+
+                          AppSpacing.verticalSpaceXxl,
+
+                          // Enhanced Section Header
+                          _buildSectionHeader(
+                            title: 'Bencana Terkini',
+                            actionText: 'Lihat Semua',
+                            onActionPressed: () {
+                              // TODO: Navigate to all reports
+                            },
+                          ),
+
+                          AppSpacing.verticalSpaceLg,
+
+                          // Enhanced Disaster Cards List
+                          _isLoading
+                              ? _buildLoadingCards()
+                              : _buildDisasterCards(),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
-
-            // Main Content
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Search Bar with Enhanced Design
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.1),
-                          spreadRadius: 1,
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Cari berita rescue terkini...',
-                        hintStyle: TextStyle(color: Colors.grey[500]),
-                        prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
-                        suffixIcon: InkWell(
-                          onTap: () async {
-                            final result = await showModalBottomSheet<
-                                Map<String, dynamic>>(
-                              context: context,
-                              isScrollControlled: true,
-                              backgroundColor: Colors.transparent,
-                              builder: (context) =>
-                                  const SearchFilterBottomSheet(),
-                            );
-                            if (result != null) {
-                              // TODO: Apply filters to search results
-                              print('Filters applied: $result');
-                            }
-                          },
-                          child: Container(
-                            margin: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF8B0000),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: const Icon(Icons.tune,
-                                color: Colors.white, size: 20),
-                          ),
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide.none,
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 16),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // Quick Actions Section
-                  const QuickActionsWidget(),
-
-                  // Section Header with Action Button
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Bencana Terkini',
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF2C3E50),
-                        ),
-                      ),
-                      TextButton.icon(
-                        onPressed: () {
-                          // TODO: Navigate to all reports
-                        },
-                        icon: const Icon(Icons.arrow_forward, size: 16),
-                        label: const Text('Lihat Semua'),
-                        style: TextButton.styleFrom(
-                          foregroundColor: const Color(0xFF8B0000),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  // Disaster Cards List
-                  ListView.separated(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: mockReports.length,
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(height: 16),
-                    itemBuilder: (context, index) {
-                      return DisasterCard(
-                        report: mockReports[index],
-                      );
-                    },
-                  ),
-
-                  const SizedBox(height: 32),
-                ],
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
 
-  Widget _buildStatCard(String title, String value, IconData icon) {
+  Widget _buildEnhancedStatCard(
+      String title, String value, IconData icon, Color color) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.15),
-        borderRadius: BorderRadius.circular(16),
+        color: AppColors.onPrimary.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
         border: Border.all(
-          color: Colors.white.withOpacity(0.2),
+          color: AppColors.onPrimary.withOpacity(0.2),
           width: 1,
         ),
       ),
@@ -287,28 +294,175 @@ class HomeScreen extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(icon, color: Colors.white, size: 20),
-              const Spacer(),
-              Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.sm),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                ),
+                child: Icon(
+                  icon,
+                  color: color,
+                  size: AppSpacing.iconSizeSmall,
+                ),
+              ),
+              AppSpacing.horizontalSpaceSm,
+              Expanded(
+                child: Text(
+                  title,
+                  style: AppTypography.labelMedium.copyWith(
+                    color: AppColors.onPrimary.withOpacity(0.8),
+                  ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          AppSpacing.verticalSpaceSm,
           Text(
-            title,
-            style: const TextStyle(
-              fontSize: 12,
-              color: Colors.white70,
+            value,
+            style: AppTypography.headlineLarge.copyWith(
+              color: AppColors.onPrimary,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ],
       ),
     );
+  }
+
+  Widget _buildEnhancedSearchBar() {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.shadowLight,
+            spreadRadius: 1,
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: TextField(
+        decoration: InputDecoration(
+          hintText: 'Cari berita rescue terkini...',
+          hintStyle: AppTypography.bodyMedium.copyWith(
+            color: AppColors.onSurfaceVariant,
+          ),
+          prefixIcon: Icon(
+            Icons.search,
+            color: AppColors.onSurfaceVariant,
+            size: AppSpacing.iconSizeMedium,
+          ),
+          suffixIcon: InkWell(
+            onTap: () async {
+              final result = await showModalBottomSheet<Map<String, dynamic>>(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (context) => const SearchFilterBottomSheet(),
+              );
+              if (result != null) {
+                // TODO: Apply filters to search results
+                print('Filters applied: $result');
+              }
+            },
+            child: Container(
+              margin: const EdgeInsets.all(AppSpacing.sm),
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+              ),
+              child: Icon(
+                Icons.tune,
+                color: AppColors.onPrimary,
+                size: AppSpacing.iconSizeSmall,
+              ),
+            ),
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
+            borderSide: BorderSide.none,
+          ),
+          filled: true,
+          fillColor: AppColors.surface,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.lg,
+            vertical: AppSpacing.lg,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader({
+    required String title,
+    required String actionText,
+    required VoidCallback onActionPressed,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          title,
+          style: AppTypography.headlineMedium.copyWith(
+            color: AppColors.onSurface,
+          ),
+        ),
+        TextButton.icon(
+          onPressed: onActionPressed,
+          icon: Icon(
+            Icons.arrow_forward,
+            size: AppSpacing.iconSizeSmall,
+          ),
+          label: Text(actionText),
+          style: TextButton.styleFrom(
+            foregroundColor: AppColors.primary,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLoadingCards() {
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: 3,
+      separatorBuilder: (context, index) => AppSpacing.verticalSpaceLg,
+      itemBuilder: (context, index) {
+        return const DisasterCardSkeleton();
+      },
+    );
+  }
+
+  Widget _buildDisasterCards() {
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: mockReports.length,
+      separatorBuilder: (context, index) => AppSpacing.verticalSpaceLg,
+      itemBuilder: (context, index) {
+        return TweenAnimationBuilder<double>(
+          duration: Duration(milliseconds: 300 + (index * 100)),
+          tween: Tween(begin: 0.0, end: 1.0),
+          builder: (context, value, child) {
+            return Transform.translate(
+              offset: Offset(0, 50 * (1 - value)),
+              child: Opacity(
+                opacity: value,
+                child: DisasterCard(report: mockReports[index]),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  // Legacy method for backward compatibility
+  Widget _buildStatCard(String title, String value, IconData icon) {
+    return _buildEnhancedStatCard(title, value, icon, AppColors.success);
   }
 }
