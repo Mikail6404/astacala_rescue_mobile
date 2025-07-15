@@ -33,7 +33,7 @@ void main() {
                 ),
 
                 // Statistics Cards
-                Container(
+                SizedBox(
                   height: 120,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,

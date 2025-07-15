@@ -44,7 +44,7 @@ class _ReportWizardScreenState extends State<ReportWizardScreen>
   String? _selectedDisasterType;
   String? _selectedSeverity;
   LatLng? _selectedLocation;
-  List<File> _selectedImages = [];
+  final List<File> _selectedImages = [];
   bool _isLocationLoading = false;
 
   final List<String> _disasterTypes = [
