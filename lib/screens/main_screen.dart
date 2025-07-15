@@ -1,9 +1,10 @@
 // package:astacala_rescue_mobile/screens/main_screen.dart
 
 import 'package:astacala_rescue_mobile/cubits/auth/auth_cubit.dart';
+import 'package:astacala_rescue_mobile/cubits/report/report_cubit.dart';
 import 'package:astacala_rescue_mobile/screens/account/account_screen.dart';
 import 'package:astacala_rescue_mobile/screens/home/home_screen.dart';
-import 'package:astacala_rescue_mobile/screens/report/report_screen.dart';
+import 'package:astacala_rescue_mobile/screens/report/report_wizard_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,7 +21,10 @@ class _MainScreenState extends State<MainScreen> {
   // Fix: Changed 'static const' to 'final'.
   // This allows the list to hold non-const widgets like our updated HomeScreen.
   final List<Widget> _pages = <Widget>[
-    const ReportScreen(), // ReportScreen can be const
+    BlocProvider(
+      create: (context) => ReportCubit(),
+      child: const ReportWizardScreen(),
+    ), // Enhanced wizard-based reporting
     HomeScreen(), // HomeScreen is not const
     const AccountScreen(), // AccountScreen can be const
   ];
@@ -99,7 +103,7 @@ class _MainScreenState extends State<MainScreen> {
           color: Colors.white,
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
+              color: Colors.grey.withValues(alpha: 0.1),
               spreadRadius: 1,
               blurRadius: 10,
               offset: const Offset(0, -2),

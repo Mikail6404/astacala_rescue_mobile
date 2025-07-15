@@ -13,7 +13,7 @@ import 'package:astacala_rescue_mobile/utils/app_typography.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen({super.key});
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -133,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           end: Alignment.bottomRight,
                           colors: [
                             AppColors.primary,
-                            AppColors.primary.withOpacity(0.8),
+                            AppColors.primary.withValues(alpha: 0.8),
                           ],
                         ),
                         borderRadius: BorderRadius.only(
@@ -153,8 +153,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     padding:
                                         const EdgeInsets.all(AppSpacing.md),
                                     decoration: BoxDecoration(
-                                      color:
-                                          AppColors.onPrimary.withOpacity(0.2),
+                                      color: AppColors.onPrimary
+                                          .withValues(alpha: 0.2),
                                       borderRadius: BorderRadius.circular(
                                           AppSpacing.radiusLg),
                                     ),
@@ -182,7 +182,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                           style:
                                               AppTypography.bodyMedium.copyWith(
                                             color: AppColors.onPrimary
-                                                .withOpacity(0.8),
+                                                .withValues(alpha: 0.8),
                                           ),
                                         ),
                                       ],
@@ -282,10 +282,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppColors.onPrimary.withOpacity(0.1),
+        color: AppColors.onPrimary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
         border: Border.all(
-          color: AppColors.onPrimary.withOpacity(0.2),
+          color: AppColors.onPrimary.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -297,7 +297,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               Container(
                 padding: const EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.2),
+                  color: color.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                 ),
                 child: Icon(
@@ -311,7 +311,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 child: Text(
                   title,
                   style: AppTypography.labelMedium.copyWith(
-                    color: AppColors.onPrimary.withOpacity(0.8),
+                    color: AppColors.onPrimary.withValues(alpha: 0.8),
                   ),
                 ),
               ),
@@ -365,7 +365,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               );
               if (result != null) {
                 // TODO: Apply filters to search results
-                print('Filters applied: $result');
+                // Filter logic: Apply result filters to disaster list
               }
             },
             child: Container(
@@ -459,10 +459,5 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         );
       },
     );
-  }
-
-  // Legacy method for backward compatibility
-  Widget _buildStatCard(String title, String value, IconData icon) {
-    return _buildEnhancedStatCard(title, value, icon, AppColors.success);
   }
 }

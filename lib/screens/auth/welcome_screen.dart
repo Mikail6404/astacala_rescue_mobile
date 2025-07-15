@@ -17,7 +17,7 @@ class WelcomeScreen extends StatelessWidget {
             end: Alignment.bottomCenter,
             colors: [
               const Color(0xFF8B0000),
-              const Color(0xFF8B0000).withOpacity(0.8),
+              const Color(0xFF8B0000).withValues(alpha: 0.8),
               Colors.white,
             ],
             stops: const [0.0, 0.4, 1.0],
@@ -45,7 +45,7 @@ class WelcomeScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(30),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
+                              color: Colors.black.withValues(alpha: 0.1),
                               blurRadius: 20,
                               offset: const Offset(0, 10),
                             ),
@@ -113,7 +113,7 @@ class WelcomeScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
+                              color: Colors.black.withValues(alpha: 0.05),
                               blurRadius: 20,
                               offset: const Offset(0, 5),
                             ),
@@ -162,7 +162,7 @@ class WelcomeScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFF8B0000).withOpacity(0.4),
+                              color: const Color(0xFF8B0000).withValues(alpha: 0.4),
                               blurRadius: 12,
                               offset: const Offset(0, 4),
                             ),
@@ -257,7 +257,7 @@ class WelcomeScreen extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
+            color: Colors.white.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(icon, color: Colors.white, size: 24),

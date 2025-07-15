@@ -10,21 +10,17 @@ class ReportCubit extends Cubit<ReportState> {
   Future<void> submitReport(ReportData data) async {
     emit(ReportSubmissionLoading());
     try {
+      // TODO: Backend Integration - Replace with real API call
       // In a real app, you would send the data to your API here.
-      // For now, we'll just print it to the console to verify.
-      print('--- Submitting Report ---');
-      print('Team Name: ${data.teamName}');
-      print('Personnel: ${data.personnelCount}');
-      print('Location: ${data.location}');
-      print('Coordinates: ${data.coordinates}');
-      print('Image Path: ${data.image?.path}');
-      print('-------------------------');
+      // Example: await _apiService.submitReport(data.toJson());
 
       // Simulate network delay
       await Future.delayed(const Duration(seconds: 3));
 
-      // You could add mock failure logic here if needed
-      // if (data.teamName.isEmpty) throw Exception('Team name cannot be empty');
+      // Mock validation - replace with actual API response handling
+      if (data.teamName.isEmpty) {
+        throw Exception('Team name cannot be empty');
+      }
 
       emit(ReportSubmissionSuccess());
     } catch (e) {

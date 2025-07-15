@@ -20,23 +20,29 @@ class _ForumScreenState extends State<ForumScreen> {
   final List<ForumMessageModel> _messages = [
     ForumMessageModel(
       userName: 'AdrianFirmansyah',
-      userImageUrl: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=100',
+      userImageUrl:
+          'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=100',
       timestamp: '26 September 2024 20:57 WIB',
-      message: 'Tolong bantu saya untuk menjelaskan apakah akses kendaraan untuk perjalanan untuk menuju lokasi bencana tersebut bisa dilalui.',
+      message:
+          'Tolong bantu saya untuk menjelaskan apakah akses kendaraan untuk perjalanan untuk menuju lokasi bencana tersebut bisa dilalui.',
       replies: [
         ForumMessageModel(
           userName: 'BrandonKent',
-          userImageUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100',
+          userImageUrl:
+              'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100',
           timestamp: '26 September 2024 21:05 WIB',
-          message: 'Betul sekali, saya juga sangat ingin tahu terkait akses kendaraan kesana itu bisa dilalui atau tidak.',
+          message:
+              'Betul sekali, saya juga sangat ingin tahu terkait akses kendaraan kesana itu bisa dilalui atau tidak.',
         ),
       ],
     ),
     ForumMessageModel(
       userName: 'George',
-      userImageUrl: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100',
+      userImageUrl:
+          'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100',
       timestamp: '27 September 2024 08:30 WIB',
-      message: 'Informasi terakhir yang saya dapat, jalur utama masih terputus. Mungkin bisa coba jalur alternatif via desa sebelah.',
+      message:
+          'Informasi terakhir yang saya dapat, jalur utama masih terputus. Mungkin bisa coba jalur alternatif via desa sebelah.',
     ),
   ];
 
@@ -47,7 +53,8 @@ class _ForumScreenState extends State<ForumScreen> {
     // This method should send the text from _messageController.text to your API.
     // The API would save it and the app would then refresh the message list.
     if (_messageController.text.isNotEmpty) {
-      print('Posting message: ${_messageController.text}');
+      // Message posting logic - replace with API call
+      // await _forumService.postMessage(widget.report.id, _messageController.text);
       _messageController.clear();
       FocusScope.of(context).unfocus(); // Hide keyboard
     }
@@ -87,7 +94,7 @@ class _ForumScreenState extends State<ForumScreen> {
           BoxShadow(
             offset: const Offset(0, -1),
             blurRadius: 4,
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
           ),
         ],
       ),
@@ -144,8 +151,11 @@ class _MessageWidget extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(message.userName, style: const TextStyle(fontWeight: FontWeight.bold)),
-                      Text(message.timestamp, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                      Text(message.userName,
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                      Text(message.timestamp,
+                          style: const TextStyle(
+                              fontSize: 12, color: Colors.grey)),
                       const SizedBox(height: 4),
                       Text(message.message),
                     ],

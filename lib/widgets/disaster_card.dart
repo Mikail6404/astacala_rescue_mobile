@@ -17,7 +17,7 @@ class DisasterCard extends StatelessWidget {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.08),
+            color: Colors.grey.withValues(alpha: 0.08),
             spreadRadius: 1,
             blurRadius: 12,
             offset: const Offset(0, 4),
@@ -43,7 +43,7 @@ class DisasterCard extends StatelessWidget {
                         end: Alignment.bottomCenter,
                         colors: [
                           Colors.transparent,
-                          Colors.black.withOpacity(0.3),
+                          Colors.black.withValues(alpha: 0.3),
                         ],
                       ),
                     ),
@@ -93,11 +93,11 @@ class DisasterCard extends StatelessWidget {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
-                      color: Colors.red.withOpacity(0.9),
+                      color: Colors.red.withValues(alpha: 0.9),
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
+                          color: Colors.black.withValues(alpha: 0.2),
                           blurRadius: 4,
                           offset: const Offset(0, 2),
                         ),
@@ -129,7 +129,7 @@ class DisasterCard extends StatelessWidget {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.7),
+                      color: Colors.black.withValues(alpha: 0.7),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Row(
@@ -162,7 +162,7 @@ class DisasterCard extends StatelessWidget {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.9),
+                      color: Colors.white.withValues(alpha: 0.9),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: const Text(
@@ -288,7 +288,7 @@ class DisasterCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFF8B0000).withOpacity(0.3),
+                              color: const Color(0xFF8B0000).withValues(alpha: 0.3),
                               blurRadius: 8,
                               offset: const Offset(0, 2),
                             ),

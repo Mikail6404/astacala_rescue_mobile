@@ -155,7 +155,7 @@ class ErrorSnackBar {
             Container(
               padding: const EdgeInsets.all(AppSpacing.xs),
               decoration: BoxDecoration(
-                color: AppColors.onError.withOpacity(0.2),
+                color: AppColors.onError.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusXs),
               ),
               child: Icon(
@@ -207,7 +207,7 @@ class SuccessSnackBar {
             Container(
               padding: const EdgeInsets.all(AppSpacing.xs),
               decoration: BoxDecoration(
-                color: AppColors.onSuccess.withOpacity(0.2),
+                color: AppColors.onSuccess.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusXs),
               ),
               child: Icon(

@@ -111,14 +111,14 @@ class QuickActionsWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.08),
+                color: Colors.grey.withValues(alpha: 0.08),
                 spreadRadius: 1,
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
             ],
             border: Border.all(
-              color: Colors.grey.withOpacity(0.1),
+              color: Colors.grey.withValues(alpha: 0.1),
             ),
           ),
           child: Column(
@@ -127,7 +127,7 @@ class QuickActionsWidget extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
+                  color: color.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
@@ -175,7 +175,7 @@ class QuickActionsWidget extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: const Color(0xFFD32F2F).withOpacity(0.1),
+                color: const Color(0xFFD32F2F).withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: const Icon(

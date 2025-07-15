@@ -25,7 +25,7 @@ class NotificationBadge extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: backgroundColor ?? Colors.white.withOpacity(0.2),
+            color: backgroundColor ?? Colors.white.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(12),
           ),
           child: InkWell(
@@ -52,7 +52,7 @@ class NotificationBadge extends StatelessWidget {
                 border: Border.all(color: Colors.white, width: 2),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
+                    color: Colors.black.withValues(alpha: 0.2),
                     blurRadius: 4,
                     offset: const Offset(0, 2),
                   ),

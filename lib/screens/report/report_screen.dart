@@ -127,10 +127,14 @@ class _ReportFormState extends State<ReportForm> {
 
       // 3. Get the current position
       Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
+      );
 
       // 4. Update the text field
-      _coordinatesController.text = '${position.latitude}, ${position.longitude}';
+      _coordinatesController.text =
+          '${position.latitude}, ${position.longitude}';
     } catch (e) {
       // Show error message to the user
       if (mounted) {
@@ -203,7 +207,10 @@ class _ReportFormState extends State<ReportForm> {
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: Text(
         title,
-        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF8B0000)),
+        style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF8B0000)),
       ),
     );
   }
@@ -277,7 +284,8 @@ class _ReportFormState extends State<ReportForm> {
                 TextFormField(
                   controller: _locationController,
                   decoration: const InputDecoration(
-                      labelText: 'Lokasi Bencana', border: OutlineInputBorder()),
+                      labelText: 'Lokasi Bencana',
+                      border: OutlineInputBorder()),
                 ),
                 const SizedBox(height: 12),
 

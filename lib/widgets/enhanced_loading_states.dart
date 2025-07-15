@@ -266,7 +266,7 @@ class _LoadingButtonState extends State<LoadingButton>
                     ? null
                     : [
                         BoxShadow(
-                          color: backgroundColor.withOpacity(0.3),
+                          color: backgroundColor.withValues(alpha: 0.3),
                           blurRadius: 8,
                           offset: const Offset(0, 4),
                         ),
