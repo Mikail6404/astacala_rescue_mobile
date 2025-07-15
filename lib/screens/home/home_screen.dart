@@ -204,25 +204,33 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                   ),
                                 ],
                               ),
-                              AppSpacing.verticalSpaceXxl,
-                              // Enhanced Emergency Stats Row
+                              AppSpacing
+                                  .verticalSpaceXl, // Reduced from Xxl to Xl
+                              // Enhanced Emergency Stats Row with responsive design
                               Row(
                                 children: [
                                   Expanded(
-                                    child: _buildEnhancedStatCard(
-                                      'Laporan Aktif',
-                                      '12',
-                                      Icons.report_problem,
-                                      AppColors.warning,
+                                    child: IntrinsicHeight(
+                                      // Add IntrinsicHeight for equal heights
+                                      child: _buildEnhancedStatCard(
+                                        'Laporan Aktif',
+                                        '12',
+                                        Icons.report_problem,
+                                        AppColors.warning,
+                                      ),
                                     ),
                                   ),
-                                  AppSpacing.horizontalSpaceMd,
+                                  AppSpacing
+                                      .horizontalSpaceSm, // Reduced from Md to Sm
                                   Expanded(
-                                    child: _buildEnhancedStatCard(
-                                      'Tim Siaga',
-                                      '8',
-                                      Icons.group,
-                                      AppColors.success,
+                                    child: IntrinsicHeight(
+                                      // Add IntrinsicHeight for equal heights
+                                      child: _buildEnhancedStatCard(
+                                        'Tim Siaga',
+                                        '8',
+                                        Icons.group,
+                                        AppColors.success,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -280,7 +288,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget _buildEnhancedStatCard(
       String title, String value, IconData icon, Color color) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.md), // Reduced from lg to md
       decoration: BoxDecoration(
         color: AppColors.onPrimary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
@@ -291,11 +299,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min, // Add this to prevent overflow
         children: [
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(AppSpacing.sm),
+                padding: const EdgeInsets.all(
+                    AppSpacing.xs), // Reduced from sm to xs
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
@@ -306,23 +316,30 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   size: AppSpacing.iconSizeSmall,
                 ),
               ),
-              AppSpacing.horizontalSpaceSm,
+              AppSpacing.horizontalSpaceXs, // Reduced from sm to xs
               Expanded(
                 child: Text(
                   title,
-                  style: AppTypography.labelMedium.copyWith(
+                  style: AppTypography.labelSmall.copyWith(
+                    // Changed from labelMedium to labelSmall
                     color: AppColors.onPrimary.withValues(alpha: 0.8),
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
           ),
-          AppSpacing.verticalSpaceSm,
-          Text(
-            value,
-            style: AppTypography.headlineLarge.copyWith(
-              color: AppColors.onPrimary,
-              fontWeight: FontWeight.bold,
+          AppSpacing.verticalSpaceXs, // Reduced from sm to xs
+          Flexible(
+            // Wrap in Flexible to prevent overflow
+            child: Text(
+              value,
+              style: AppTypography.headlineMedium.copyWith(
+                // Changed from headlineLarge to headlineMedium
+                color: AppColors.onPrimary,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],

@@ -28,13 +28,18 @@ class NotificationBadge extends StatelessWidget {
             color: backgroundColor ?? Colors.white.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: InkWell(
-            onTap: onTap,
-            borderRadius: BorderRadius.circular(12),
-            child: Icon(
-              icon,
-              color: iconColor ?? Colors.white,
-              size: 24,
+          child: Semantics(
+            label:
+                'Notifikasi, ${count > 0 ? '$count notifikasi baru' : 'tidak ada notifikasi baru'}',
+            button: true,
+            child: InkWell(
+              onTap: onTap,
+              borderRadius: BorderRadius.circular(12),
+              child: Icon(
+                icon,
+                color: iconColor ?? Colors.white,
+                size: 24,
+              ),
             ),
           ),
         ),

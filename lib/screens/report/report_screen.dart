@@ -179,21 +179,29 @@ class _ReportFormState extends State<ReportForm> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ListTile(
-              leading: const Icon(Icons.camera_alt),
-              title: const Text('Camera'),
-              onTap: () {
-                Navigator.of(context).pop();
-                _pickImage(ImageSource.camera);
-              },
+            Semantics(
+              label: 'Ambil foto dengan kamera',
+              button: true,
+              child: ListTile(
+                leading: const Icon(Icons.camera_alt),
+                title: const Text('Kamera'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  _pickImage(ImageSource.camera);
+                },
+              ),
             ),
-            ListTile(
-              leading: const Icon(Icons.photo_library),
-              title: const Text('Gallery'),
-              onTap: () {
-                Navigator.of(context).pop();
-                _pickImage(ImageSource.gallery);
-              },
+            Semantics(
+              label: 'Pilih foto dari galeri',
+              button: true,
+              child: ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Gallery'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  _pickImage(ImageSource.gallery);
+                },
+              ),
             ),
           ],
         ),
@@ -204,11 +212,11 @@ class _ReportFormState extends State<ReportForm> {
   // Helper widget for section headers
   Widget _buildSectionHeader(String title) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      padding: const EdgeInsets.symmetric(vertical: 12.0), // Reduced from 16.0 to 12.0
       child: Text(
         title,
         style: const TextStyle(
-            fontSize: 18,
+            fontSize: 16, // Reduced from 18 to 16
             fontWeight: FontWeight.bold,
             color: Color(0xFF8B0000)),
       ),
@@ -236,163 +244,185 @@ class _ReportFormState extends State<ReportForm> {
           );
         }
       },
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Pastikan data assessment yang dilaporkan telah akurat!',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                ),
-
-                // --- Team Relawan Section ---
-                _buildSectionHeader('Team Relawan'),
-                TextFormField(
-                  controller: _teamNameController,
-                  decoration: const InputDecoration(
-                      labelText: 'Nama Team', border: OutlineInputBorder()),
-                ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: _personnelCountController,
-                  decoration: const InputDecoration(
-                      labelText: 'Jumlah Personel',
-                      border: OutlineInputBorder()),
-                  keyboardType: TextInputType.number,
-                ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: _phoneController,
-                  decoration: const InputDecoration(
-                      labelText: 'No Telepon', border: OutlineInputBorder()),
-                  keyboardType: TextInputType.phone,
-                ),
-
-                // --- Disaster Information Section ---
-                _buildSectionHeader('Informasi Data Bencana'),
-                TextFormField(
-                  controller: _disasterInfoController,
-                  decoration: const InputDecoration(
-                      labelText: 'Informasi singkat bencana',
-                      border: OutlineInputBorder()),
-                ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: _locationController,
-                  decoration: const InputDecoration(
-                      labelText: 'Lokasi Bencana',
-                      border: OutlineInputBorder()),
-                ),
-                const SizedBox(height: 12),
-
-                // --- New Image Upload Section ---
-                // Image Preview
-                if (_selectedImage != null)
-                  Container(
-                    height: 200,
-                    width: double.infinity,
-                    margin: const EdgeInsets.only(bottom: 12),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(8),
-                      image: DecorationImage(
-                        image: FileImage(_selectedImage!),
-                        fit: BoxFit.cover,
+      child: SafeArea( // Add SafeArea
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(12.0), // Reduced from 16.0 to 12.0
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Pastikan data assessment yang dilaporkan telah akurat!',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500), // Reduced from 16 to 14
+                  ),
+                  const SizedBox(height: 8), // Add spacing
+                  
+                  // --- Team Relawan Section ---
+                  _buildSectionHeader('Team Relawan'),
+                  TextFormField(
+                    controller: _teamNameController,
+                    decoration: const InputDecoration(
+                        labelText: 'Nama Team', border: OutlineInputBorder()),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Nama tim wajib diisi';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 8), // Reduced from 12 to 8
+                  TextFormField(
+                    controller: _personnelCountController,
+                    decoration: const InputDecoration(
+                        labelText: 'Jumlah Personel',
+                        border: OutlineInputBorder()),
+                    keyboardType: TextInputType.number,
+                  ),
+                  const SizedBox(height: 8), // Reduced from 12 to 8
+                  TextFormField(
+                    controller: _phoneController,
+                    decoration: const InputDecoration(
+                        labelText: 'No Telepon', border: OutlineInputBorder()),
+                    keyboardType: TextInputType.phone,
+                  ),
+                  
+                  // --- Disaster Information Section ---
+                  _buildSectionHeader('Informasi Data Bencana'),
+                  TextFormField(
+                    controller: _disasterInfoController,
+                    decoration: const InputDecoration(
+                        labelText: 'Informasi singkat bencana',
+                        border: OutlineInputBorder()),
+                  ),
+                  const SizedBox(height: 8), // Reduced from 12 to 8
+                  TextFormField(
+                    controller: _locationController,
+                    decoration: const InputDecoration(
+                        labelText: 'Lokasi Bencana',
+                        border: OutlineInputBorder()),
+                  ),
+                  const SizedBox(height: 8), // Reduced from 12 to 8
+                  
+                  // --- New Image Upload Section ---
+                  // Image Preview
+                  if (_selectedImage != null)
+                    Container(
+                      height: 150, // Reduced from 200 to 150
+                      width: double.infinity,
+                      margin: const EdgeInsets.only(bottom: 8), // Reduced from 12 to 8
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(8),
+                        image: DecorationImage(
+                          image: FileImage(_selectedImage!),
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
+                  
+                  // Upload Button
+                  Semantics(
+                    label: _selectedImage == null ? 'Unggah foto lokasi bencana' : 'Ganti foto lokasi bencana',
+                    button: true,
+                    child: OutlinedButton.icon(
+                      icon: const Icon(Icons.camera_alt),
+                      label: Text(_selectedImage == null
+                          ? 'Unggah Foto Lokasi Bencana'
+                          : 'Ganti Foto'),
+                      onPressed: _showImageSourceDialog,
+                    ),
                   ),
-                // Upload Button
-                OutlinedButton.icon(
-                  icon: const Icon(Icons.camera_alt),
-                  label: Text(_selectedImage == null
-                      ? 'Unggah Foto Lokasi Bencana'
-                      : 'Ganti Foto'),
-                  onPressed: _showImageSourceDialog,
-                ),
-                const SizedBox(height: 12),
-
-                // --- New GPS Coordinate Field ---
-                TextFormField(
-                  controller: _coordinatesController,
-                  readOnly: true, // Make it read-only
-                  decoration: InputDecoration(
-                    labelText: 'Titik Koordinat Lokasi Bencana',
-                    border: const OutlineInputBorder(),
-                    suffixIcon: _isFetchingLocation
-                        ? const Padding(
-                            padding: EdgeInsets.all(12.0),
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : IconButton(
-                            icon: const Icon(Icons.my_location),
-                            onPressed: _getCurrentLocation,
+                  const SizedBox(height: 8), // Reduced from 12 to 8
+                  
+                  // --- New GPS Coordinate Field ---
+                  TextFormField(
+                    controller: _coordinatesController,
+                    readOnly: true, // Make it read-only
+                    decoration: InputDecoration(
+                      labelText: 'Titik Koordinat Lokasi Bencana',
+                      border: const OutlineInputBorder(),
+                      suffixIcon: _isFetchingLocation
+                          ? const Padding(
+                              padding: EdgeInsets.all(12.0),
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : Semantics(
+                              label: 'Dapatkan lokasi GPS saat ini',
+                              button: true,
+                              child: IconButton(
+                                icon: const Icon(Icons.my_location),
+                                onPressed: _getCurrentLocation,
+                              ),
+                            ),
+                    ),
+                  ),
+                  const SizedBox(height: 8), // Reduced from 12 to 8
+                  
+                  // --- Dropdown for Disaster Condition ---
+                  DropdownButtonFormField<String>(
+                    value: _selectedCondition,
+                    decoration: const InputDecoration(
+                      labelText: 'Kondisi Lokasi Bencana',
+                      border: OutlineInputBorder(),
+                    ),
+                    items: _disasterConditions.map((String condition) {
+                      return DropdownMenuItem<String>(
+                        value: condition,
+                        child: Text(condition),
+                      );
+                    }).toList(),
+                    onChanged: (newValue) {
+                      setState(() {
+                        _selectedCondition = newValue;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 8), // Reduced from 12 to 8
+                  TextFormField(
+                    controller: _victimCountController,
+                    decoration: const InputDecoration(
+                        labelText: 'Jumlah Korban', border: OutlineInputBorder()),
+                    keyboardType: TextInputType.number,
+                  ),
+                  const SizedBox(height: 8), // Reduced from 12 to 8
+                  TextFormField(
+                    controller: _descriptionController,
+                    decoration: const InputDecoration(
+                        labelText: 'Deskripsi Terkait Data Lainnya',
+                        border: OutlineInputBorder()),
+                    maxLines: 3, // Reduced from 4 to 3
+                  ),
+                  const SizedBox(height: 16), // Reduced from 24 to 16
+                  
+                  // --- Submit Button ---
+                  BlocBuilder<ReportCubit, ReportState>(
+                    builder: (context, state) {
+                      if (state is ReportSubmissionLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      return SizedBox(
+                        width: double.infinity,
+                        child: Semantics(
+                          label: 'Simpan laporan bencana',
+                          button: true,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF8B0000),
+                              padding: const EdgeInsets.symmetric(vertical: 14), // Reduced from 16 to 14
+                            ),
+                            onPressed: _submitForm,
+                            child: const Text('Simpan Laporan',
+                                style:
+                                    TextStyle(color: Colors.white, fontSize: 16)),
                           ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-
-                // --- Dropdown for Disaster Condition ---
-                DropdownButtonFormField<String>(
-                  value: _selectedCondition,
-                  decoration: const InputDecoration(
-                    labelText: 'Kondisi Lokasi Bencana',
-                    border: OutlineInputBorder(),
-                  ),
-                  items: _disasterConditions.map((String condition) {
-                    return DropdownMenuItem<String>(
-                      value: condition,
-                      child: Text(condition),
-                    );
-                  }).toList(),
-                  onChanged: (newValue) {
-                    setState(() {
-                      _selectedCondition = newValue;
-                    });
-                  },
-                ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: _victimCountController,
-                  decoration: const InputDecoration(
-                      labelText: 'Jumlah Korban', border: OutlineInputBorder()),
-                  keyboardType: TextInputType.number,
-                ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: _descriptionController,
-                  decoration: const InputDecoration(
-                      labelText: 'Deskripsi Terkait Data Lainnya',
-                      border: OutlineInputBorder()),
-                  maxLines: 4,
-                ),
-                const SizedBox(height: 24),
-
-                // --- Submit Button ---
-                BlocBuilder<ReportCubit, ReportState>(
-                  builder: (context, state) {
-                    if (state is ReportSubmissionLoading) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                    return SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF8B0000),
-                          padding: const EdgeInsets.symmetric(vertical: 16),
                         ),
-                        onPressed: _submitForm,
-                        child: const Text('Simpan Laporan',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 16)),
-                      ),
-                    );
-                  },
-                ),
-              ],
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),
