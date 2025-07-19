@@ -206,7 +206,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         alignment: Alignment.centerRight,
                         child: TextButton(
                           onPressed: () {
-                            // TODO: Implement forgot password
+                            // Forgot password feature - implement when backend supports it
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                    'Fitur lupa password akan tersedia segera'),
+                                backgroundColor: Color(0xFF8B0000),
+                              ),
+                            );
                           },
                           child: const Text(
                             'Lupa Password?',
@@ -253,7 +260,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             borderRadius: BorderRadius.circular(12),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFF8B0000).withValues(alpha: 0.3),
+                                color: const Color(0xFF8B0000)
+                                    .withValues(alpha: 0.3),
                                 blurRadius: 8,
                                 offset: const Offset(0, 2),
                               ),

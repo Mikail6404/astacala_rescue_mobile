@@ -25,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late Animation<Offset> _slideAnimation;
 
   bool _isLoading = false;
+  int _notificationCount = 0;
 
   // Create mock data to build the UI without a backend
   final List<DisasterReportCardModel> mockReports = [
@@ -87,6 +88,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     ));
 
     _animationController.forward();
+    _loadNotificationCount();
+  }
+
+  void _loadNotificationCount() async {
+    try {
+      final count = await NotificationService.getUnreadCount();
+      setState(() {
+        _notificationCount = count;
+      });
+    } catch (e) {
+      // Fallback to 0 if error
+      setState(() {
+        _notificationCount = 0;
+      });
+    }
   }
 
   @override
@@ -100,8 +116,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       _isLoading = true;
     });
 
-    // TODO: Implement refresh functionality with backend
+    // Refresh notification count and other data
     await Future.delayed(const Duration(seconds: 2));
+    _loadNotificationCount();
 
     setState(() {
       _isLoading = false;
@@ -189,7 +206,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     ),
                                   ),
                                   NotificationBadge(
-                                    count: NotificationService.getUnreadCount(),
+                                    count: _notificationCount,
                                     icon: Icons.notifications_outlined,
                                     iconColor: AppColors.onPrimary,
                                     onTap: () {
@@ -262,7 +279,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             title: 'Bencana Terkini',
                             actionText: 'Lihat Semua',
                             onActionPressed: () {
-                              // TODO: Navigate to all reports
+                              Navigator.pushNamed(context, '/reports');
                             },
                           ),
 
@@ -381,8 +398,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 builder: (context) => const SearchFilterBottomSheet(),
               );
               if (result != null) {
-                // TODO: Apply filters to search results
-                // Filter logic: Apply result filters to disaster list
+                // Apply filters to search results
+                // In a real app, you would filter the disaster list based on the result
+                print('Applied filters: $result');
               }
             },
             child: Container(

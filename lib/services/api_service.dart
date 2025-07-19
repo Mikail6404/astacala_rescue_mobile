@@ -6,8 +6,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  // Backend API base URL
-  static const String baseUrl = 'http://127.0.0.1:8000/api';
+  // Backend API base URL - Use localhost for web, 10.0.2.2 for Android emulator
+  static const String baseUrl = 'http://localhost:8000/api';
 
   // HTTP client instance
   static final http.Client _client = http.Client();

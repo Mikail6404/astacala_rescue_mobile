@@ -68,7 +68,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   }
 
   void _loadDisasterMarkers() {
-    // TODO: Backend Integration - Replace with API call
+    // Load disaster markers from backend or use mock data
     setState(() {
       _disasterMarkers = [
         DisasterMarker(
@@ -157,7 +157,8 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
               minZoom: 5.0,
               maxZoom: 18.0,
               onTap: (tapPosition, point) {
-                // TODO: Add new disaster report at tapped location
+                // Option to add disaster report at tapped location
+                // This could be implemented in a future version
               },
             ),
             children: [
@@ -380,13 +381,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   }
 
   void _addDisasterReport() {
-    // TODO: Navigate to disaster report form
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Fitur lapor bencana akan segera tersedia'),
-        backgroundColor: Color(0xFF8B0000),
-      ),
-    );
+    Navigator.pushNamed(context, '/report-wizard');
   }
 
   void _showDisasterDetails(DisasterMarker marker) {

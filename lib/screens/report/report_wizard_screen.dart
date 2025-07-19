@@ -182,7 +182,7 @@ class _ReportWizardScreenState extends State<ReportWizardScreen>
 
   void _submitReport() {
     if (_validateCurrentStep()) {
-      // TODO: Backend Integration - Submit report to API
+      // Submit report to backend via ReportCubit
       final reportData = ReportData(
         teamName: _teamNameController.text,
         personnelCount: int.tryParse(_personnelCountController.text) ?? 0,
@@ -975,8 +975,8 @@ class _ReportWizardScreenState extends State<ReportWizardScreen>
       final ImagePicker picker = ImagePicker();
 
       if (source == ImageSource.gallery) {
-        // Single image selection from gallery for now
-        // TODO: Future enhancement - implement multiple selection
+        // Single image selection from gallery
+        // Multiple selection could be implemented in future versions
         final XFile? image = await picker.pickImage(source: source);
         if (image != null) {
           setState(() {

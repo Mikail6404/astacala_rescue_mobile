@@ -13,6 +13,11 @@ subprojects {
     project.evaluationDependsOn(":app")
 }
 
+// Add performance configurations
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += ["-Xlint:all", "-Werror"]
+}
+
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }

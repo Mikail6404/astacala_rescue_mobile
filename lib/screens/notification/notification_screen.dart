@@ -17,10 +17,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
     _loadNotifications();
   }
 
-  void _loadNotifications() {
-    // TODO: Backend Integration - Replace with API call
+  void _loadNotifications() async {
+    final loadedNotifications = await NotificationService.getAllNotifications();
     setState(() {
-      notifications = NotificationService.getAllNotifications();
+      notifications = loadedNotifications;
     });
   }
 
@@ -46,11 +46,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
         actions: [
           if (notifications.any((n) => !n.isRead))
             TextButton(
-              onPressed: () {
-                setState(() {
-                  NotificationService.markAllAsRead();
-                  _loadNotifications();
-                });
+              onPressed: () async {
+                await NotificationService.markAllAsRead();
+                _loadNotifications();
               },
               child: const Text(
                 'Tandai Semua',
@@ -134,14 +132,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
-          onTap: () {
+          onTap: () async {
             if (!notification.isRead) {
-              setState(() {
-                NotificationService.markAsRead(notification.id);
-                _loadNotifications();
-              });
+              await NotificationService.markAsRead(notification.id);
+              _loadNotifications();
             }
-            // TODO: Handle notification tap action
             _handleNotificationTap(notification);
           },
           child: Padding(
@@ -220,17 +215,40 @@ class _NotificationScreenState extends State<NotificationScreen> {
   }
 
   void _handleNotificationTap(NotificationModel notification) {
-    // TODO: Backend Integration - Handle different notification actions
+    // Handle different notification actions based on type and action data
     switch (notification.type) {
       case 'emergency':
-        // Navigate to disaster detail or map
+        // Navigate to map or disaster detail if reportId is available
+        if (notification.actionData?.containsKey('reportId') == true) {
+          Navigator.of(context).pushNamed('/report-detail',
+              arguments: notification.actionData!['reportId']);
+        } else {
+          Navigator.of(context).pushNamed('/map');
+        }
         break;
       case 'update':
-        // Navigate to relevant update screen
+        // Navigate to reports screen for updates
+        Navigator.of(context).pushNamed('/reports');
         break;
       case 'info':
-        // Navigate to info/training screen
+        // Navigate to forum or training screen
+        Navigator.of(context).pushNamed('/forum');
         break;
+      default:
+        // Show notification details in a dialog
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text(notification.title),
+            content: Text(notification.message),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
     }
   }
 

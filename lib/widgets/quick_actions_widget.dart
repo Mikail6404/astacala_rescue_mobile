@@ -30,8 +30,7 @@ class QuickActionsWidget extends StatelessWidget {
                   subtitle: 'Laporkan kejadian darurat',
                   color: const Color(0xFF8B0000),
                   onTap: () {
-                    // TODO: Navigate to report screen
-                    Navigator.pushNamed(context, '/report');
+                    Navigator.pushNamed(context, '/report-wizard');
                   },
                 ),
               ),
@@ -66,7 +65,6 @@ class QuickActionsWidget extends StatelessWidget {
                   subtitle: 'Diskusi dan koordinasi',
                   color: const Color(0xFF1976D2),
                   onTap: () {
-                    // TODO: Navigate to forum screen
                     Navigator.pushNamed(context, '/forum');
                   },
                 ),
@@ -214,7 +212,13 @@ class QuickActionsWidget extends StatelessWidget {
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
-              // TODO: Implement direct call functionality
+              // In a real app, implement call functionality using url_launcher
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Fitur panggilan akan tersedia segera'),
+                  backgroundColor: Color(0xFFD32F2F),
+                ),
+              );
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFD32F2F),

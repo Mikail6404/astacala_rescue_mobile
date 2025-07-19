@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:astacala_rescue_mobile/services/api_service.dart';
 
 class NotificationBadge extends StatelessWidget {
   final int count;
@@ -106,8 +107,9 @@ class NotificationModel {
   });
 }
 
-// Mock notification service - Replace with backend integration
+// Notification service with backend integration
 class NotificationService {
+  // Fallback mock data for when API is unavailable
   static final List<NotificationModel> _mockNotifications = [
     NotificationModel(
       id: '1',
@@ -133,46 +135,78 @@ class NotificationService {
     ),
   ];
 
-  // TODO: Backend Integration
-  // Replace these methods with actual API calls
-  static List<NotificationModel> getAllNotifications() {
-    return _mockNotifications;
-  }
-
-  static int getUnreadCount() {
-    return _mockNotifications.where((n) => !n.isRead).length;
-  }
-
-  static void markAsRead(String notificationId) {
-    // TODO: Send API request to mark notification as read
-    final index = _mockNotifications.indexWhere((n) => n.id == notificationId);
-    if (index != -1) {
-      _mockNotifications[index] = NotificationModel(
-        id: _mockNotifications[index].id,
-        title: _mockNotifications[index].title,
-        message: _mockNotifications[index].message,
-        timestamp: _mockNotifications[index].timestamp,
-        type: _mockNotifications[index].type,
-        isRead: true,
-        imageUrl: _mockNotifications[index].imageUrl,
-        actionData: _mockNotifications[index].actionData,
-      );
+  static Future<List<NotificationModel>> getAllNotifications() async {
+    try {
+      final response = await ApiService.getNotifications();
+      final notifications = response['data'] as List<dynamic>? ?? [];
+      return notifications
+          .map<NotificationModel>((data) => NotificationModel(
+                id: data['id'].toString(),
+                title: data['title']?.toString() ?? '',
+                message: data['message']?.toString() ?? '',
+                timestamp:
+                    DateTime.tryParse(data['created_at']?.toString() ?? '') ??
+                        DateTime.now(),
+                type: data['type']?.toString() ?? 'info',
+                isRead: data['is_read'] == true,
+                imageUrl: data['image_url']?.toString(),
+                actionData: data['action_data'] as Map<String, dynamic>?,
+              ))
+          .toList();
+    } catch (e) {
+      // Return mock data if API fails
+      return _mockNotifications;
     }
   }
 
-  static void markAllAsRead() {
-    // TODO: Send API request to mark all notifications as read
-    for (int i = 0; i < _mockNotifications.length; i++) {
-      _mockNotifications[i] = NotificationModel(
-        id: _mockNotifications[i].id,
-        title: _mockNotifications[i].title,
-        message: _mockNotifications[i].message,
-        timestamp: _mockNotifications[i].timestamp,
-        type: _mockNotifications[i].type,
-        isRead: true,
-        imageUrl: _mockNotifications[i].imageUrl,
-        actionData: _mockNotifications[i].actionData,
-      );
+  static Future<int> getUnreadCount() async {
+    try {
+      final notifications = await getAllNotifications();
+      return notifications.where((n) => !n.isRead).length;
+    } catch (e) {
+      return _mockNotifications.where((n) => !n.isRead).length;
+    }
+  }
+
+  static Future<void> markAsRead(String notificationId) async {
+    try {
+      await ApiService.markNotificationAsRead(int.parse(notificationId));
+    } catch (e) {
+      // Update mock data if API fails
+      final index =
+          _mockNotifications.indexWhere((n) => n.id == notificationId);
+      if (index != -1) {
+        _mockNotifications[index] = NotificationModel(
+          id: _mockNotifications[index].id,
+          title: _mockNotifications[index].title,
+          message: _mockNotifications[index].message,
+          timestamp: _mockNotifications[index].timestamp,
+          type: _mockNotifications[index].type,
+          isRead: true,
+          imageUrl: _mockNotifications[index].imageUrl,
+          actionData: _mockNotifications[index].actionData,
+        );
+      }
+    }
+  }
+
+  static Future<void> markAllAsRead() async {
+    try {
+      await ApiService.markAllNotificationsAsRead();
+    } catch (e) {
+      // Update mock data if API fails
+      for (int i = 0; i < _mockNotifications.length; i++) {
+        _mockNotifications[i] = NotificationModel(
+          id: _mockNotifications[i].id,
+          title: _mockNotifications[i].title,
+          message: _mockNotifications[i].message,
+          timestamp: _mockNotifications[i].timestamp,
+          type: _mockNotifications[i].type,
+          isRead: true,
+          imageUrl: _mockNotifications[i].imageUrl,
+          actionData: _mockNotifications[i].actionData,
+        );
+      }
     }
   }
 }

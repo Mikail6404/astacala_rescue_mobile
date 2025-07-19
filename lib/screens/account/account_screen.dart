@@ -146,7 +146,7 @@ class AccountScreen extends StatelessWidget {
                         Icons.history,
                         'Riwayat',
                         () {
-                          // TODO: Navigate to history
+                          Navigator.pushNamed(context, '/history');
                         },
                       ),
                     ),

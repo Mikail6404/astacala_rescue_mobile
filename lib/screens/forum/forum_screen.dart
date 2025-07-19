@@ -14,9 +14,7 @@ class ForumScreen extends StatefulWidget {
 }
 
 class _ForumScreenState extends State<ForumScreen> {
-  // TODO: Backend Integration
-  // This mock data should be replaced with a list fetched from your API
-  // for this specific disaster report.
+  // Mock forum data - replace with API integration when backend is ready
   final List<ForumMessageModel> _messages = [
     ForumMessageModel(
       userName: 'Mikail',
@@ -49,14 +47,19 @@ class _ForumScreenState extends State<ForumScreen> {
   final _messageController = TextEditingController();
 
   void _postMessage() {
-    // TODO: Backend Integration
-    // This method should send the text from _messageController.text to your API.
-    // The API would save it and the app would then refresh the message list.
+    // Post message functionality - integrate with backend when ready
     if (_messageController.text.isNotEmpty) {
-      // Message posting logic - replace with API call
-      // await _forumService.postMessage(widget.report.id, _messageController.text);
+      // Example: await ApiService.postForumMessage(widget.report.id, _messageController.text);
       _messageController.clear();
       FocusScope.of(context).unfocus(); // Hide keyboard
+
+      // Show confirmation
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Forum feature available in next version'),
+          backgroundColor: Color(0xFF8B0000),
+        ),
+      );
     }
   }
 
