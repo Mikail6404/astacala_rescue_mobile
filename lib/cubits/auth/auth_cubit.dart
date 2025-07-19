@@ -2,55 +2,101 @@
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:astacala_rescue_mobile/cubits/auth/auth_state.dart';
+import 'package:astacala_rescue_mobile/services/api_service.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   AuthCubit() : super(AuthInitial());
 
   // --- Login Logic ---
-  Future<void> login(String username, String password) async {
+  Future<void> login(String emailOrUsername, String password) async {
     emit(AuthLoading());
     try {
-      // Simulate network delay
-      await Future.delayed(const Duration(seconds: 2));
+      // Call the real API endpoint (using email field since our backend expects email)
+      final response = await ApiService.login(
+        email:
+            emailOrUsername, // Backend expects email, but users can enter username or email
+        password: password,
+      );
 
-      // Mock API logic: fail if password is "password"
-      if (password == 'password') {
-        throw Exception('Invalid credentials');
+      // Check if we received user data
+      if (response['user'] != null && response['access_token'] != null) {
+        emit(AuthSuccess());
+      } else {
+        emit(AuthFailure('Login failed: Invalid response from server'));
       }
-
-      // On success
-      emit(AuthSuccess());
-    } catch (e) {
+    } on ApiException catch (e) {
       emit(AuthFailure(e.toString()));
+    } catch (e) {
+      emit(AuthFailure('Login failed: ${e.toString()}'));
     }
   }
 
   // --- Registration Logic ---
   Future<void> register({
-    required String username,
+    required String name,
+    required String email,
     required String password,
-    required String fullName,
+    required String passwordConfirmation,
+    String? phone,
+    String? organization,
+    String? birthDate,
   }) async {
     emit(AuthLoading());
     try {
-      // Simulate network delay
-      await Future.delayed(const Duration(seconds: 2));
-      
-      // Mock API logic: fail if username already exists
-      if (username == 'mikail') {
-          throw Exception('Username already exists');
-      }
+      // Call the real API endpoint
+      final response = await ApiService.register(
+        name: name,
+        email: email,
+        password: password,
+        passwordConfirmation: passwordConfirmation,
+        phone: phone,
+        organization: organization,
+        birthDate: birthDate,
+      );
 
-      // On success
-      emit(AuthSuccess());
-    } catch (e) {
+      // Check if registration was successful
+      if (response['user'] != null && response['access_token'] != null) {
+        emit(AuthSuccess());
+      } else {
+        emit(AuthFailure('Registration failed: Invalid response from server'));
+      }
+    } on ApiException catch (e) {
       emit(AuthFailure(e.toString()));
+    } catch (e) {
+      emit(AuthFailure('Registration failed: ${e.toString()}'));
     }
   }
 
   // --- Logout Logic ---
   Future<void> logout() async {
-    // Here you might clear tokens or user data in a real app
-    emit(AuthInitial());
+    try {
+      // Call the API logout endpoint to invalidate the token
+      await ApiService.logout();
+    } catch (e) {
+      // Even if the API call fails, we still want to clear local auth state
+      // This handles cases where the user is offline or the server is down
+    } finally {
+      // Always clear the authentication state
+      emit(AuthInitial());
+    }
+  }
+
+  // --- Check Authentication Status ---
+  Future<void> checkAuthStatus() async {
+    final token = await ApiService.getAuthToken();
+    if (token != null) {
+      // Token exists, but we should verify it's still valid
+      try {
+        // Try to get user profile to verify token validity
+        await ApiService.getUserProfile();
+        emit(AuthSuccess());
+      } catch (e) {
+        // Token is invalid or expired, clear it
+        await ApiService.clearAuthToken();
+        emit(AuthInitial());
+      }
+    } else {
+      emit(AuthInitial());
+    }
   }
 }

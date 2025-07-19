@@ -1,9 +1,11 @@
 # 🚨 Astacala Rescue Mobile
 ### Prototipe Aplikasi Pengelolaan Tanggap Bencana Berbasis Mobile pada Yayasan Astacala
 
-![Status](https://img.shields.io/badge/status-Frontend%20Complete-brightgreen)
+![Status](https://img.shields.io/badge/status-Backend%20Integrated-brightgreen)
 ![Flutter Version](https://img.shields.io/badge/Flutter-3.x-blue)
+![Laravel](https://img.shields.io/badge/Laravel-11-red)
 ![Tests](https://img.shields.io/badge/Tests-83%2B%20Passing-brightgreen)
+![API](https://img.shields.io/badge/API-Production%20Ready-green)
 ![Final Project](https://img.shields.io/badge/Tugas%20Akhir-D3%20Sistem%20Informasi-blue)
 ![University](https://img.shields.io/badge/Universitas-Telkom-orange)
 
@@ -64,18 +66,22 @@ A dedicated mobile application providing structured communication channels, real
 
 ### **✅ Fully Implemented & Tested**
 - **Frontend Architecture**: 100% complete with BLoC state management
+- **Backend API**: 100% complete Laravel 11 with MySQL database
+- **Authentication System**: JWT-based login/register with persistent sessions
+- **User Profile Management**: Complete CRUD operations with avatar upload
+- **Disaster Report System**: Full submission with images and GPS data
 - **UI/UX Design**: Material 3 implementation with comprehensive animations
-- **Core Features**: All user workflows functional with mock data
+- **Core Features**: All user workflows functional with real backend integration
 - **Testing Suite**: 83+ unit, widget, and integration tests (all passing)
 - **Documentation**: Complete knowledge transfer materials
 - **Cross-platform**: Full Android support, iOS ready
 
-### **🔄 Pending Backend Integration**
-- **Authentication API**: User registration, login, JWT tokens
-- **Disaster Reports API**: CRUD operations, image uploads, GPS data
-- **Real-time Features**: Push notifications, live updates
-- **Database**: User management, incident tracking, media storage
-- **Communication**: Forum messages, team coordination
+### **🔄 Recently Integrated (July 19, 2025)**
+- **HTTP Client**: Real API calls replacing mock data system
+- **Token Management**: Persistent JWT authentication storage
+- **Image Upload**: Multi-part form data for disaster reports and avatars
+- **Error Handling**: Comprehensive API exception management
+- **Auto-Authentication**: App startup authentication status checking
 
 ---
 
@@ -89,26 +95,42 @@ A dedicated mobile application providing structured communication channels, real
 - **Media**: Image picker for photos
 - **Navigation**: Go Router for app routing
 - **Design**: Material 3 design system
+- **HTTP Client**: Native HTTP package with authentication
+- **Storage**: SharedPreferences for token persistence
+
+### **Backend Technology Stack**
+- **Framework**: Laravel 11 (PHP)
+- **Database**: MySQL with proper relationships
+- **Authentication**: Laravel Sanctum with JWT tokens
+- **File Storage**: Local storage with validation
+- **API Design**: RESTful endpoints with proper status codes
 
 ### **Key Dependencies**
 ```yaml
+# Core Flutter
 flutter_bloc: ^9.1.1          # State management
 flutter_map: ^7.0.2          # Interactive maps  
 geolocator: ^13.0.1          # GPS location
 image_picker: ^1.1.2         # Camera/gallery
 latlong2: ^0.9.1             # Coordinate calculations
 url_launcher: ^6.3.1         # External links
+
+# Backend Integration (New)
+http: ^1.1.0                 # HTTP client for API calls
+shared_preferences: ^2.2.2    # Token storage
 ```
 
 ### **Project Structure**
 ```
 lib/
 ├── cubits/         # BLoC state management
-│   ├── auth/       # Authentication logic
-│   ├── profile/    # User profile management  
-│   └── report/     # Disaster reporting
+│   ├── auth/       # Authentication logic (JWT integrated)
+│   ├── profile/    # User profile management (API integrated)  
+│   └── report/     # Disaster reporting (API integrated)
 ├── models/         # Data structures & JSON serialization
 ├── screens/        # UI screens and pages
+├── services/       # API service layer (NEW)
+│   └── api_service.dart  # Complete REST API client
 ├── utils/          # App-wide utilities & theming
 └── widgets/        # Reusable UI components
 ```

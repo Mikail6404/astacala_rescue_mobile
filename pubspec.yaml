@@ -40,6 +40,8 @@ dependencies:
   flutter_map: ^7.0.2 # Free OpenStreetMap integration
   latlong2: ^0.9.1 # Latitude/longitude calculations
   url_launcher: ^6.3.1 # For map attribution links
+  http: ^1.1.0 # HTTP client for API calls
+  shared_preferences: ^2.2.2 # Local storage for tokens
 
 dev_dependencies:
   flutter_test:

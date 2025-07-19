@@ -14,6 +14,7 @@ class CustomTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final int? maxLines;
   final bool readOnly;
+  final bool enabled;
   final VoidCallback? onTap;
 
   const CustomTextField({
@@ -29,6 +30,7 @@ class CustomTextField extends StatelessWidget {
     this.keyboardType,
     this.maxLines = 1,
     this.readOnly = false,
+    this.enabled = true,
     this.onTap,
   });
 
@@ -51,6 +53,7 @@ class CustomTextField extends StatelessWidget {
         keyboardType: keyboardType,
         maxLines: maxLines,
         readOnly: readOnly,
+        enabled: enabled,
         onTap: onTap,
         decoration: InputDecoration(
           labelText: labelText,
