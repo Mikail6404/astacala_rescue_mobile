@@ -19,7 +19,7 @@ class _ForumScreenState extends State<ForumScreen> {
   // for this specific disaster report.
   final List<ForumMessageModel> _messages = [
     ForumMessageModel(
-      userName: 'AdrianFirmansyah',
+      userName: 'Mikail',
       userImageUrl:
           'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=100',
       timestamp: '26 September 2024 20:57 WIB',
@@ -27,7 +27,7 @@ class _ForumScreenState extends State<ForumScreen> {
           'Tolong bantu saya untuk menjelaskan apakah akses kendaraan untuk perjalanan untuk menuju lokasi bencana tersebut bisa dilalui.',
       replies: [
         ForumMessageModel(
-          userName: 'BrandonKent',
+          userName: 'Gibran',
           userImageUrl:
               'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100',
           timestamp: '26 September 2024 21:05 WIB',
@@ -37,7 +37,7 @@ class _ForumScreenState extends State<ForumScreen> {
       ],
     ),
     ForumMessageModel(
-      userName: 'George',
+      userName: 'Astacala',
       userImageUrl:
           'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100',
       timestamp: '27 September 2024 08:30 WIB',

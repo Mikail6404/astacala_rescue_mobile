@@ -97,9 +97,9 @@ class WelcomeScreen extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          _buildFeatureItem(Icons.emergency, 'Tanggap Cepat'),
+                          _buildFeatureItem(Icons.emergency, 'Cepat Tanggap'),
                           _buildFeatureItem(Icons.location_on, 'Real-time'),
-                          _buildFeatureItem(Icons.group, 'Tim Solid'),
+                          _buildFeatureItem(Icons.group, 'Terpadu'),
                         ],
                       ),
 
@@ -122,7 +122,7 @@ class WelcomeScreen extends StatelessWidget {
                         child: Column(
                           children: [
                             const Text(
-                              'Bergabunglah dengan Relawan',
+                              'Bergabunglah dengan Astacala',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 20,
