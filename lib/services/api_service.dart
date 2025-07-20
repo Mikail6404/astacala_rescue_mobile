@@ -4,13 +4,28 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class ApiService {
-  // Backend API base URL - Use localhost for web, 10.0.2.2 for Android emulator
-  static const String baseUrl = 'http://localhost:8000/api';
+  // Backend API base URL - Dynamic based on platform
+  static String get baseUrl {
+    if (kIsWeb) {
+      // For web, use localhost
+      return 'http://localhost:8000/api';
+    } else if (Platform.isAndroid) {
+      // For Android emulator, use 10.0.2.2 (maps to host's localhost)
+      return 'http://10.0.2.2:8000/api';
+    } else {
+      // For iOS simulator and other platforms, use localhost
+      return 'http://localhost:8000/api';
+    }
+  }
 
-  // HTTP client instance
+  // HTTP client instance with timeout
   static final http.Client _client = http.Client();
+  
+  // Request timeout duration
+  static const Duration _requestTimeout = Duration(seconds: 15);
 
   // Authentication token storage key
   static const String _tokenKey = 'auth_token';
@@ -76,8 +91,8 @@ class ApiService {
       final url = Uri.parse('$baseUrl$endpoint');
       final headers = await _getHeaders(includeAuth: includeAuth);
 
-      final response = await _client.get(url, headers: headers);
-      return _handleResponse(response);
+      final response = await _client.get(url, headers: headers).timeout(_requestTimeout);
+      return await _handleResponse(response);
     } catch (e) {
       throw _handleError(e);
     }
@@ -95,8 +110,8 @@ class ApiService {
         url,
         headers: headers,
         body: jsonEncode(data),
-      );
-      return _handleResponse(response);
+      ).timeout(_requestTimeout);
+      return await _handleResponse(response);
     } catch (e) {
       throw _handleError(e);
     }
@@ -113,8 +128,8 @@ class ApiService {
         url,
         headers: headers,
         body: jsonEncode(data),
-      );
-      return _handleResponse(response);
+      ).timeout(_requestTimeout);
+      return await _handleResponse(response);
     } catch (e) {
       throw _handleError(e);
     }
@@ -127,7 +142,7 @@ class ApiService {
       final headers = await _getHeaders();
 
       final response = await _client.delete(url, headers: headers);
-      return _handleResponse(response);
+      return await _handleResponse(response);
     } catch (e) {
       throw _handleError(e);
     }
@@ -162,7 +177,7 @@ class ApiService {
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
 
-      return _handleResponse(response);
+      return await _handleResponse(response);
     } catch (e) {
       throw _handleError(e);
     }
@@ -171,56 +186,56 @@ class ApiService {
   // --- RESPONSE HANDLING ---
 
   /// Handle HTTP response
-  static Map<String, dynamic> _handleResponse(http.Response response) {
-    final statusCode = response.statusCode;
-    final body = response.body;
+  static Future<Map<String, dynamic>> _handleResponse(
+      http.Response response) async {
+    final body = response.body.trim();
+
+    if (body.isEmpty) {
+      throw Exception('Server returned empty response');
+    }
 
     try {
       final data = jsonDecode(body) as Map<String, dynamic>;
 
-      if (statusCode >= 200 && statusCode < 300) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         return data;
       } else {
-        throw ApiException(
-          message: data['message'] ?? 'Request failed',
-          statusCode: statusCode,
-          errors: data['errors'],
-        );
+        final errorMessage = data['message'] ?? 'Unknown error occurred';
+        throw Exception(errorMessage);
       }
     } catch (e) {
-      if (e is ApiException) rethrow;
-
-      throw ApiException(
-        message: 'Failed to parse response: $body',
-        statusCode: statusCode,
-      );
+      if (e is Exception) rethrow;
+      throw Exception('Invalid response from server: ${response.statusCode}');
     }
   }
 
   /// Handle request errors
   static Exception _handleError(dynamic error) {
     if (error is SocketException) {
-      return ApiException(
-        message:
-            'No internet connection. Please check your network and try again.',
-        statusCode: 0,
-      );
+      return Exception(
+          'Cannot connect to API service. Please ensure the backend server is running on localhost:8000');
     } else if (error is http.ClientException) {
-      return ApiException(
-        message: 'Connection failed. Please try again.',
-        statusCode: 0,
-      );
-    } else if (error is ApiException) {
-      return error;
+      return Exception(
+          'API connection failed. Please check if the backend server is accessible.');
+    } else if (error.toString().contains('TimeoutException')) {
+      return Exception(
+          'Request timeout. Please check your internet connection and try again.');
     } else {
-      return ApiException(
-        message: 'An unexpected error occurred: ${error.toString()}',
-        statusCode: 0,
-      );
+      return Exception('An unexpected error occurred: ${error.toString()}');
     }
   }
 
   // --- AUTHENTICATION API ENDPOINTS ---
+
+  /// Health check - Test if backend API is accessible
+  static Future<Map<String, dynamic>> healthCheck() async {
+    try {
+      return await _get('/health', includeAuth: false);
+    } catch (e) {
+      // Provide more detailed error information for health check
+      throw Exception('Backend API health check failed: ${e.toString()}');
+    }
+  }
 
   /// User login
   static Future<Map<String, dynamic>> login({
@@ -235,9 +250,34 @@ class ApiService {
         },
         includeAuth: false);
 
+    // Handle different response formats from Laravel
+    // CRITICAL FIX (July 20, 2025): Laravel Sanctum returns tokens in nested structure
+    // Expected format: response['data']['tokens']['accessToken']
+    // This handles multiple formats for backward compatibility
+    String? token;
+    if (data.containsKey('access_token')) {
+      token = data['access_token'];
+    } else if (data.containsKey('token')) {
+      token = data['token'];
+    } else if (data.containsKey('data') && data['data'] is Map) {
+      final dataMap = data['data'] as Map<String, dynamic>;
+      if (dataMap.containsKey('access_token')) {
+        token = dataMap['access_token'];
+      } else if (dataMap.containsKey('token')) {
+        token = dataMap['token'];
+      } else if (dataMap.containsKey('tokens') && dataMap['tokens'] is Map) {
+        final tokensMap = dataMap['tokens'] as Map<String, dynamic>;
+        if (tokensMap.containsKey('accessToken')) {
+          token = tokensMap['accessToken'];
+        } else if (tokensMap.containsKey('access_token')) {
+          token = tokensMap['access_token'];
+        }
+      }
+    }
+
     // Store the token if login successful
-    if (data['access_token'] != null) {
-      await setAuthToken(data['access_token']);
+    if (token != null) {
+      await setAuthToken(token);
     }
 
     return data;
@@ -266,9 +306,31 @@ class ApiService {
         },
         includeAuth: false);
 
+    // Handle different response formats from Laravel
+    String? token;
+    if (data.containsKey('access_token')) {
+      token = data['access_token'];
+    } else if (data.containsKey('token')) {
+      token = data['token'];
+    } else if (data.containsKey('data') && data['data'] is Map) {
+      final dataMap = data['data'] as Map<String, dynamic>;
+      if (dataMap.containsKey('access_token')) {
+        token = dataMap['access_token'];
+      } else if (dataMap.containsKey('token')) {
+        token = dataMap['token'];
+      } else if (dataMap.containsKey('tokens') && dataMap['tokens'] is Map) {
+        final tokensMap = dataMap['tokens'] as Map<String, dynamic>;
+        if (tokensMap.containsKey('accessToken')) {
+          token = tokensMap['accessToken'];
+        } else if (tokensMap.containsKey('access_token')) {
+          token = tokensMap['access_token'];
+        }
+      }
+    }
+
     // Store the token if registration successful
-    if (data['access_token'] != null) {
-      await setAuthToken(data['access_token']);
+    if (token != null) {
+      await setAuthToken(token);
     }
 
     return data;

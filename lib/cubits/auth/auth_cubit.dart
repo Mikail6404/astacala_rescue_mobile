@@ -11,23 +11,43 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> login(String emailOrUsername, String password) async {
     emit(AuthLoading());
     try {
-      // Call the real API endpoint (using email field since our backend expects email)
+      // Add timeout to prevent infinite loading
       final response = await ApiService.login(
-        email:
-            emailOrUsername, // Backend expects email, but users can enter username or email
+        email: emailOrUsername,
         password: password,
-      );
+      ).timeout(const Duration(seconds: 30));
 
-      // Check if we received user data
-      if (response['user'] != null && response['access_token'] != null) {
+      // Check if we received user data - handle Laravel Sanctum response structure
+      // CRITICAL FIX (July 20, 2025): Laravel Sanctum uses nested response format
+      // Expected: response['data']['user'] and response['data']['tokens']['accessToken']
+      bool hasUser = false;
+      bool hasToken = false;
+
+      // Check for user data
+      if (response['user'] != null) {
+        hasUser = true;
+      } else if (response['data'] != null && response['data']['user'] != null) {
+        hasUser = true;
+      }
+
+      // Check for token (it's already stored by ApiService, just verify response structure)
+      if (response['access_token'] != null ||
+          response['token'] != null ||
+          (response['data'] != null && response['data']['tokens'] != null)) {
+        hasToken = true;
+      }
+
+      if (hasUser && (hasToken || response['success'] == true)) {
         emit(AuthSuccess());
       } else {
         emit(AuthFailure('Login failed: Invalid response from server'));
       }
-    } on ApiException catch (e) {
-      emit(AuthFailure(e.toString()));
     } catch (e) {
-      emit(AuthFailure('Login failed: ${e.toString()}'));
+      if (e.toString().contains('TimeoutException') || e.toString().contains('timeout')) {
+        emit(AuthFailure('Login timeout. Please check your connection and try again.'));
+      } else {
+        emit(AuthFailure('Login failed: ${e.toString()}'));
+      }
     }
   }
 
@@ -43,7 +63,7 @@ class AuthCubit extends Cubit<AuthState> {
   }) async {
     emit(AuthLoading());
     try {
-      // Call the real API endpoint
+      // Add timeout to prevent infinite loading
       final response = await ApiService.register(
         name: name,
         email: email,
@@ -52,18 +72,37 @@ class AuthCubit extends Cubit<AuthState> {
         phone: phone,
         organization: organization,
         birthDate: birthDate,
-      );
+      ).timeout(const Duration(seconds: 30));
 
-      // Check if registration was successful
-      if (response['user'] != null && response['access_token'] != null) {
+      // Check if registration was successful - handle Laravel Sanctum response structure
+      bool hasUser = false;
+      bool hasToken = false;
+
+      // Check for user data
+      if (response['user'] != null) {
+        hasUser = true;
+      } else if (response['data'] != null && response['data']['user'] != null) {
+        hasUser = true;
+      }
+
+      // Check for token (it's already stored by ApiService, just verify response structure)
+      if (response['access_token'] != null ||
+          response['token'] != null ||
+          (response['data'] != null && response['data']['tokens'] != null)) {
+        hasToken = true;
+      }
+
+      if (hasUser && (hasToken || response['success'] == true)) {
         emit(AuthSuccess());
       } else {
         emit(AuthFailure('Registration failed: Invalid response from server'));
       }
-    } on ApiException catch (e) {
-      emit(AuthFailure(e.toString()));
     } catch (e) {
-      emit(AuthFailure('Registration failed: ${e.toString()}'));
+      if (e.toString().contains('TimeoutException') || e.toString().contains('timeout')) {
+        emit(AuthFailure('Registration timeout. Please check your connection and try again.'));
+      } else {
+        emit(AuthFailure('Registration failed: ${e.toString()}'));
+      }
     }
   }
 
@@ -84,19 +123,31 @@ class AuthCubit extends Cubit<AuthState> {
   // --- Check Authentication Status ---
   Future<void> checkAuthStatus() async {
     final token = await ApiService.getAuthToken();
-    if (token != null) {
-      // Token exists, but we should verify it's still valid
-      try {
-        // Try to get user profile to verify token validity
-        await ApiService.getUserProfile();
-        emit(AuthSuccess());
-      } catch (e) {
-        // Token is invalid or expired, clear it
-        await ApiService.clearAuthToken();
-        emit(AuthInitial());
-      }
+    if (token != null && token.isNotEmpty) {
+      // Token exists - assume it's valid for faster startup
+      // Only verify token validity if we need to make an authenticated request
+      emit(AuthSuccess());
     } else {
       emit(AuthInitial());
+    }
+  }
+
+  // --- Verify Token Validity (when needed) ---
+  Future<bool> verifyTokenValidity() async {
+    final token = await ApiService.getAuthToken();
+    if (token == null || token.isEmpty) {
+      return false;
+    }
+
+    try {
+      // Try to get user profile to verify token validity
+      await ApiService.getUserProfile();
+      return true;
+    } catch (e) {
+      // Token is invalid or expired, clear it
+      await ApiService.clearAuthToken();
+      emit(AuthInitial());
+      return false;
     }
   }
 }

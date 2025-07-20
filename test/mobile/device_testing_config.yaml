@@ -1,0 +1,102 @@
+# Mobile Device Testing Configuration
+# test/mobile/device_testing_config.yaml
+
+# Device Testing Matrix
+test_devices:
+  android:
+    emulators:
+      - name: "Pixel_6_API_33"
+        api_level: 33
+        resolution: "1080x2400"
+        density: 420
+      - name: "Pixel_4_API_30" 
+        api_level: 30
+        resolution: "1080x2280"
+        density: 440
+      - name: "Nexus_5X_API_28"
+        api_level: 28
+        resolution: "1080x1920"
+        density: 420
+
+  ios:
+    simulators:
+      - name: "iPhone 14 Pro"
+        ios_version: "16.0"
+        resolution: "1179x2556"
+      - name: "iPhone SE (3rd generation)"
+        ios_version: "16.0" 
+        resolution: "750x1334"
+      - name: "iPad Pro (12.9-inch)"
+        ios_version: "16.0"
+        resolution: "2048x2732"
+
+# Test Scenarios
+test_scenarios:
+  connectivity:
+    - wifi_good
+    - wifi_poor
+    - mobile_4g
+    - mobile_3g
+    - offline
+    
+  orientations:
+    - portrait
+    - landscape
+    - auto_rotate
+    
+  system_states:
+    - fresh_install
+    - after_update
+    - with_cached_data
+    - low_memory
+    - low_battery
+    
+  user_interactions:
+    - first_time_user
+    - returning_user
+    - power_user
+    
+# Performance Thresholds
+performance_targets:
+  app_launch_time: "< 3000ms"
+  screen_transition: "< 500ms"
+  api_response: "< 2000ms"
+  memory_usage: "< 200MB"
+  battery_drain: "< 5% per hour"
+
+# Backend Integration Points
+backend_endpoints:
+  base_url: "http://10.0.2.2:8000/api"
+  test_endpoints:
+    - "/health"
+    - "/auth/login"
+    - "/auth/register" 
+    - "/user/profile"
+    - "/disasters/reports"
+    - "/notifications"
+
+# Test Data
+test_data:
+  users:
+    - email: "test@astacala.com"
+      password: "password123"
+      role: "volunteer"
+    - email: "admin@astacala.com"
+      password: "admin123"
+      role: "admin"
+      
+  sample_reports:
+    - type: "Banjir"
+      location: "Jakarta Selatan"
+      description: "Banjir setinggi 2 meter"
+      severity: "high"
+    - type: "Gempa"
+      location: "Yogyakarta"
+      description: "Gempa 6.2 SR"
+      severity: "critical"
+
+# Test Coverage Requirements
+coverage_targets:
+  line_coverage: "> 80%"
+  branch_coverage: "> 75%"
+  function_coverage: "> 85%
