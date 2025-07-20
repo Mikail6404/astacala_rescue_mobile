@@ -23,7 +23,7 @@ class ApiService {
 
   // HTTP client instance with timeout
   static final http.Client _client = http.Client();
-  
+
   // Request timeout duration
   static const Duration _requestTimeout = Duration(seconds: 15);
 
@@ -91,7 +91,8 @@ class ApiService {
       final url = Uri.parse('$baseUrl$endpoint');
       final headers = await _getHeaders(includeAuth: includeAuth);
 
-      final response = await _client.get(url, headers: headers).timeout(_requestTimeout);
+      final response =
+          await _client.get(url, headers: headers).timeout(_requestTimeout);
       return await _handleResponse(response);
     } catch (e) {
       throw _handleError(e);
@@ -106,11 +107,13 @@ class ApiService {
       final url = Uri.parse('$baseUrl$endpoint');
       final headers = await _getHeaders(includeAuth: includeAuth);
 
-      final response = await _client.post(
-        url,
-        headers: headers,
-        body: jsonEncode(data),
-      ).timeout(_requestTimeout);
+      final response = await _client
+          .post(
+            url,
+            headers: headers,
+            body: jsonEncode(data),
+          )
+          .timeout(_requestTimeout);
       return await _handleResponse(response);
     } catch (e) {
       throw _handleError(e);
@@ -124,11 +127,13 @@ class ApiService {
       final url = Uri.parse('$baseUrl$endpoint');
       final headers = await _getHeaders();
 
-      final response = await _client.put(
-        url,
-        headers: headers,
-        body: jsonEncode(data),
-      ).timeout(_requestTimeout);
+      final response = await _client
+          .put(
+            url,
+            headers: headers,
+            body: jsonEncode(data),
+          )
+          .timeout(_requestTimeout);
       return await _handleResponse(response);
     } catch (e) {
       throw _handleError(e);

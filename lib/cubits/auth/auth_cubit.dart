@@ -43,8 +43,10 @@ class AuthCubit extends Cubit<AuthState> {
         emit(AuthFailure('Login failed: Invalid response from server'));
       }
     } catch (e) {
-      if (e.toString().contains('TimeoutException') || e.toString().contains('timeout')) {
-        emit(AuthFailure('Login timeout. Please check your connection and try again.'));
+      if (e.toString().contains('TimeoutException') ||
+          e.toString().contains('timeout')) {
+        emit(AuthFailure(
+            'Login timeout. Please check your connection and try again.'));
       } else {
         emit(AuthFailure('Login failed: ${e.toString()}'));
       }
@@ -98,8 +100,10 @@ class AuthCubit extends Cubit<AuthState> {
         emit(AuthFailure('Registration failed: Invalid response from server'));
       }
     } catch (e) {
-      if (e.toString().contains('TimeoutException') || e.toString().contains('timeout')) {
-        emit(AuthFailure('Registration timeout. Please check your connection and try again.'));
+      if (e.toString().contains('TimeoutException') ||
+          e.toString().contains('timeout')) {
+        emit(AuthFailure(
+            'Registration timeout. Please check your connection and try again.'));
       } else {
         emit(AuthFailure('Registration failed: ${e.toString()}'));
       }
